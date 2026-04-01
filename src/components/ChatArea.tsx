@@ -633,26 +633,27 @@ const ChatArea: React.FC<ChatAreaProps> = ({
           align-items: flex-start;
         }
         .message-bubble {
-          max-width: 65%;
-          padding: 1rem 1.4rem;
+          padding: 1.25rem 1.75rem;
           font-family: var(--font-body);
           font-size: 17px;
-          line-height: 1.8;
-          border-radius: 6px;
+          line-height: 1.85;
+          border-radius: 20px;
         }
         .user .message-bubble {
-          background: var(--surface-container-low);
+          max-width: 52%;
+          background: var(--surface-container-high);
           color: var(--on-surface);
-          border-bottom-right-radius: 2px;
-          border: 1px solid var(--outline-variant);
-          font-size: 16px;
+          border: none;
+          font-family: var(--font-label);
+          font-size: 15px;
+          font-weight: 400;
+          line-height: 1.65;
         }
         .assistant .message-bubble {
+          max-width: 78%;
           background: var(--surface-container-lowest);
           color: var(--on-surface);
-          box-shadow: 0 1px 6px rgba(45, 52, 53, 0.05);
-          border: 1px solid var(--outline-variant);
-          border-bottom-left-radius: 2px;
+          border: none;
           font-style: italic;
           font-weight: 400;
         }
@@ -771,9 +772,9 @@ const ChatArea: React.FC<ChatAreaProps> = ({
 
         /* ── Edit mode ── */
         .message-bubble.editing {
-          background: var(--surface-container-low);
-          width: 65%;
-          max-width: 65%;
+          background: var(--surface-container-high);
+          width: 52%;
+          max-width: 52%;
         }
         .edit-mode {
           display: flex;
@@ -814,9 +815,9 @@ const ChatArea: React.FC<ChatAreaProps> = ({
           font-weight: 500;
           padding: 6px 16px;
           border-radius: 4px;
-          background: var(--primary);
+          background: linear-gradient(135deg, var(--primary), var(--primary-dim));
           color: white;
-          box-shadow: 0 2px 6px rgba(45,52,53,0.15);
+          box-shadow: 0 2px 8px rgba(61, 74, 143, 0.25);
         }
 
         /* ── Typing indicator ── */
@@ -838,18 +839,17 @@ const ChatArea: React.FC<ChatAreaProps> = ({
           display: flex;
           align-items: center;
           gap: 12px;
-          padding: 10px 16px;
-          background: var(--surface-container-lowest);
-          border-radius: 12px;
-          border: 1px solid var(--outline-variant);
+          padding: 12px 20px;
+          background: var(--surface-container-highest);
+          border-radius: 100px;
+          border: none;
           transition: all 0.2s ease;
         }
         .input-pill:focus-within {
-          border-color: rgba(89, 96, 97, 0.5);
-          box-shadow: 0 2px 12px rgba(45,52,53,0.05);
+          box-shadow: 0 0 0 2px rgba(61, 74, 143, 0.18);
         }
         .input-pill--disabled {
-          background: var(--surface-container-low);
+          background: var(--surface-container-high);
           opacity: 0.65;
         }
         .input-pill textarea {
@@ -888,10 +888,10 @@ const ChatArea: React.FC<ChatAreaProps> = ({
           flex-shrink: 0;
         }
         .send-btn.active {
-          background: var(--primary);
+          background: linear-gradient(135deg, var(--primary), var(--primary-dim));
           color: white;
           opacity: 1;
-          box-shadow: 0 2px 8px rgba(45,52,53,0.2);
+          box-shadow: 0 2px 10px rgba(61, 74, 143, 0.3);
         }
         .input-disclaimer {
           text-align: center;
@@ -924,20 +924,25 @@ const ChatArea: React.FC<ChatAreaProps> = ({
             gap: 20px;
           }
           .message-bubble {
-            max-width: 85%;
             padding: 1rem 1.25rem;
             font-size: 16px;
           }
+          .user .message-bubble {
+            max-width: 82%;
+          }
+          .assistant .message-bubble {
+            max-width: 92%;
+          }
           .message-bubble.editing {
-            width: 85%;
-            max-width: 85%;
+            width: 82%;
+            max-width: 82%;
           }
           .input-outer {
             padding: 12px 12px 20px;
           }
           .input-pill {
             padding: 10px 14px;
-            border-radius: 20px;
+            border-radius: 100px;
           }
           .input-disclaimer {
             font-size: 10px;
@@ -950,13 +955,17 @@ const ChatArea: React.FC<ChatAreaProps> = ({
         }
 
         @media (max-width: 480px) {
-          .message-bubble {
-            max-width: 92%;
+          .user .message-bubble {
+            max-width: 90%;
+            font-size: 15px;
+          }
+          .assistant .message-bubble {
+            max-width: 96%;
             font-size: 15px;
           }
           .message-bubble.editing {
-            width: 92%;
-            max-width: 92%;
+            width: 90%;
+            max-width: 90%;
           }
           .assistant-actions {
             opacity: 1;

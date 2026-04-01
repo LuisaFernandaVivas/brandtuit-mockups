@@ -283,9 +283,10 @@ const CompanySettingsDrawer: React.FC<CompanySettingsDrawerProps> = ({ isOpen, o
             >
               <button
                 style={{
-                  background: 'var(--primary)', color: 'white',
+                  background: 'linear-gradient(135deg, var(--primary), var(--primary-dim))', color: 'white',
                   fontFamily: 'var(--font-label)', fontSize: 13, fontWeight: 500,
                   padding: '9px 16px', borderRadius: 4,
+                  boxShadow: '0 2px 8px rgba(61, 74, 143, 0.25)',
                 }}
                 onClick={e => { e.stopPropagation(); galleryInputRef.current?.click() }}
               >
@@ -309,7 +310,7 @@ const CompanySettingsDrawer: React.FC<CompanySettingsDrawerProps> = ({ isOpen, o
                 style={{
                   fontFamily: 'var(--font-label)', fontSize: 13, fontWeight: 500,
                   padding: '9px 18px', borderRadius: 4,
-                  background: images.length > 0 ? 'var(--primary)' : 'var(--surface-container-highest)',
+                  background: images.length > 0 ? 'linear-gradient(135deg, var(--primary), var(--primary-dim))' : 'var(--surface-container-highest)',
                   color: images.length > 0 ? 'white' : 'var(--on-surface-variant)',
                   opacity: images.length > 0 ? 1 : 0.6,
                   cursor: images.length > 0 ? 'pointer' : 'default',
@@ -366,7 +367,7 @@ const inputStyle: React.CSSProperties = {
 }
 
 const saveBtnStyle: React.CSSProperties = {
-  background: 'var(--primary)',
+  background: 'linear-gradient(135deg, var(--primary), var(--primary-dim))',
   color: 'white',
   fontFamily: 'var(--font-label)',
   fontSize: 13,
@@ -374,6 +375,7 @@ const saveBtnStyle: React.CSSProperties = {
   padding: '9px 18px',
   borderRadius: 4,
   marginTop: 4,
+  boxShadow: '0 2px 8px rgba(61, 74, 143, 0.25)',
 }
 
 const sectionTitleStyle: React.CSSProperties = {
