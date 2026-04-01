@@ -2,12 +2,15 @@ import { useState } from 'react'
 import Layout from './components/Layout'
 import Login from './components/Login'
 import ChatArea, { ConvTree } from './components/ChatArea'
+import OnboardingTour from './components/OnboardingTour'
 import { initialArtifacts, recentReports, Artifact, Report } from './data/mockData'
 
 export type ReportPhase = 'type-selection' | 'upload' | 'active'
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const [tourCompleted, setTourCompleted] = useState(false)
+    const [openSettingsOnTourEnd, setOpenSettingsOnTourEnd] = useState(false)
 
     // Company settings gate
     const [companySettingsCompleted, setCompanySettingsCompleted] = useState(false)
@@ -108,33 +111,47 @@ function App() {
     const currentTypeName = selectedReport ? (reportTypeNames[selectedReport] ?? null) : null
 
     return (
-        <Layout
-            reports={reports}
-            onSelectReport={setSelectedReport}
-            selectedReport={selectedReport}
-            onNewReport={handleNewReport}
-            onRenameReport={handleRenameReport}
-            onDeleteReport={handleDeleteReport}
-            onLogout={() => setIsLoggedIn(false)}
-            artifacts={artifacts}
-            onDeleteArtifact={handleDeleteArtifact}
-            companySettingsCompleted={companySettingsCompleted}
-            onCompanySettingsComplete={handleCompanySettingsComplete}
-        >
-            <ChatArea
+        <>
+            <Layout
+                reports={reports}
+                onSelectReport={setSelectedReport}
                 selectedReport={selectedReport}
-                reportTitle={selectedReportTitle}
-                initialTree={selectedReport ? (conversations[selectedReport] ?? []) : []}
-                onTreeChange={handleTreeChange}
-                onFork={handleFork}
-                onUpload={handleUpload}
-                isSetupMode={!companySettingsCompleted}
-                reportPhase={currentPhase}
-                selectedTypeName={currentTypeName}
-                onSelectReportType={handleSelectReportType}
-                onDocumentsReady={handleDocumentsReady}
-            />
-        </Layout>
+                onNewReport={handleNewReport}
+                onRenameReport={handleRenameReport}
+                onDeleteReport={handleDeleteReport}
+                onLogout={() => setIsLoggedIn(false)}
+                artifacts={artifacts}
+                onDeleteArtifact={handleDeleteArtifact}
+                companySettingsCompleted={companySettingsCompleted}
+                onCompanySettingsComplete={handleCompanySettingsComplete}
+                openCompanySettings={openSettingsOnTourEnd}
+                onCompanySettingsOpenHandled={() => setOpenSettingsOnTourEnd(false)}
+            >
+                <ChatArea
+                    selectedReport={selectedReport}
+                    reportTitle={selectedReportTitle}
+                    initialTree={selectedReport ? (conversations[selectedReport] ?? []) : []}
+                    onTreeChange={handleTreeChange}
+                    onFork={handleFork}
+                    onUpload={handleUpload}
+                    isSetupMode={!companySettingsCompleted}
+                    reportPhase={currentPhase}
+                    selectedTypeName={currentTypeName}
+                    onSelectReportType={handleSelectReportType}
+                    onDocumentsReady={handleDocumentsReady}
+                />
+            </Layout>
+
+            {/* Onboarding tour — shown once after first login */}
+            {!tourCompleted && (
+                <OnboardingTour
+                    onComplete={() => {
+                        setTourCompleted(true)
+                        setOpenSettingsOnTourEnd(true)
+                    }}
+                />
+            )}
+        </>
     )
 }
 

@@ -32,9 +32,11 @@ interface LayoutProps {
   onDeleteArtifact?: (id: string) => void
   companySettingsCompleted: boolean
   onCompanySettingsComplete: () => void
+  openCompanySettings?: boolean
+  onCompanySettingsOpenHandled?: () => void
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, reports, onSelectReport, selectedReport, onNewReport, onRenameReport, onDeleteReport, onLogout, artifacts, onDeleteArtifact, companySettingsCompleted, onCompanySettingsComplete }) => {
+const Layout: React.FC<LayoutProps> = ({ children, reports, onSelectReport, selectedReport, onNewReport, onRenameReport, onDeleteReport, onLogout, artifacts, onDeleteArtifact, companySettingsCompleted, onCompanySettingsComplete, openCompanySettings, onCompanySettingsOpenHandled }) => {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editingTitle, setEditingTitle] = useState('')
   const [companySettingsOpen, setCompanySettingsOpen] = useState(false)
@@ -47,6 +49,14 @@ const Layout: React.FC<LayoutProps> = ({ children, reports, onSelectReport, sele
       editInputRef.current.select()
     }
   }, [editingId])
+
+  // Auto-open drawer when triggered from the tour
+  useEffect(() => {
+    if (openCompanySettings) {
+      setCompanySettingsOpen(true)
+      onCompanySettingsOpenHandled?.()
+    }
+  }, [openCompanySettings]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleNewReport = () => {
     const id = onNewReport()
