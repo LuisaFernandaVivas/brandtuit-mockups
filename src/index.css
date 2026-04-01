@@ -618,11 +618,11 @@ textarea {
 }
 
 /* User name in footer */
-.user-name {
+.unified-mini-card .user-name {
   font-family: var(--font-label);
   font-size: 12px;
   font-weight: 600;
-  color: var(--on-surface);
+  color: #e8e2d4;
 }
 
 /* Breadcrumb root */
