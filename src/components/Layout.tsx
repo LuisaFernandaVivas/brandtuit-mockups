@@ -93,11 +93,8 @@ const Layout: React.FC<LayoutProps> = ({ children, reports, onSelectReport, sele
         </div>
 
         <div className="workspace-container">
-          <div className="workspace-selector">
+          <div className="workspace-selector" style={{ cursor: 'default' }}>
             <span className="workspace-name">Wellbeam/TruSkin</span>
-            <div className="selector-arrows">
-              <ChevronDown size={14} />
-            </div>
           </div>
           <button
             className={`company-settings-btn ${!companySettingsCompleted ? 'company-settings-btn--highlight' : ''}`}

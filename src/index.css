@@ -150,8 +150,8 @@ textarea {
   border: 1px solid var(--outline-variant);
 }
 
-.workspace-selector:hover {
-  background: var(--surface-container-high);
+.workspace-selector {
+  cursor: default !important;
 }
 
 .workspace-name {

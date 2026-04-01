@@ -9,7 +9,7 @@ interface LoginProps {
 import BrandtuitLogo from './BrandtuitLogo'
 
 const Login: React.FC<LoginProps> = ({ onLogin }) => {
-  const [email, setEmail] = useState('contact@ultima.com')
+  const [email, setEmail] = useState('client@brandtuit.com')
   const [password, setPassword] = useState('••••••••')
 
   return (
