@@ -857,6 +857,39 @@ textarea {
   }
 }
 
+/* ── Setup callout in sidebar ── */
+.setup-callout {
+  padding: 12px 14px;
+  background: var(--surface-container-high);
+  border-radius: 4px;
+  border: 1px solid var(--outline-variant);
+  margin-bottom: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.setup-callout:hover {
+  background: var(--surface-container-highest);
+}
+.setup-callout-text {
+  font-family: var(--font-label);
+  font-size: 11px;
+  color: var(--on-surface-variant);
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+.setup-callout-cta {
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* Highlight company settings button when setup needed */
+.company-settings-btn--highlight {
+  border: 1px solid var(--outline-variant);
+  color: var(--on-surface);
+}
+
 .company-settings-btn {
   display: flex;
   align-items: center;

@@ -30,9 +30,11 @@ interface LayoutProps {
   onLogout: () => void
   artifacts: Artifact[]
   onDeleteArtifact?: (id: string) => void
+  companySettingsCompleted: boolean
+  onCompanySettingsComplete: () => void
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, reports, onSelectReport, selectedReport, onNewReport, onRenameReport, onDeleteReport, onLogout, artifacts, onDeleteArtifact }) => {
+const Layout: React.FC<LayoutProps> = ({ children, reports, onSelectReport, selectedReport, onNewReport, onRenameReport, onDeleteReport, onLogout, artifacts, onDeleteArtifact, companySettingsCompleted, onCompanySettingsComplete }) => {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editingTitle, setEditingTitle] = useState('')
   const [companySettingsOpen, setCompanySettingsOpen] = useState(false)
@@ -88,25 +90,48 @@ const Layout: React.FC<LayoutProps> = ({ children, reports, onSelectReport, sele
             </div>
           </div>
           <button
-            className="company-settings-btn"
+            className={`company-settings-btn ${!companySettingsCompleted ? 'company-settings-btn--highlight' : ''}`}
             onClick={() => setCompanySettingsOpen(true)}
           >
             <Settings2 size={14} />
             <span>Company Settings</span>
+            {!companySettingsCompleted && (
+              <span style={{
+                marginLeft: 'auto', background: 'var(--primary)', color: 'white',
+                fontSize: 9, fontWeight: 700, padding: '2px 6px', borderRadius: 3,
+                letterSpacing: '0.05em', textTransform: 'uppercase',
+              }}>Required</span>
+            )}
           </button>
         </div>
 
         <nav className="sidebar-nav">
           <div className="nav-section">
+
+            {/* ── Setup gate callout ── */}
+            {!companySettingsCompleted && (
+              <div className="setup-callout" onClick={() => setCompanySettingsOpen(true)}>
+                <p className="setup-callout-text">Complete Company Settings to unlock reports and start your first consultation.</p>
+                <span className="setup-callout-cta">Set up now →</span>
+              </div>
+            )}
+
             <div className="section-header">
               <span className="section-title">RECENT REPORTS</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <button className="new-report-btn" onClick={handleNewReport} title="New report">
+                <button
+                  className="new-report-btn"
+                  onClick={companySettingsCompleted ? handleNewReport : undefined}
+                  title={companySettingsCompleted ? 'New report' : 'Complete Company Settings first'}
+                  style={{ opacity: companySettingsCompleted ? undefined : 0.25, cursor: companySettingsCompleted ? 'pointer' : 'not-allowed' }}
+                >
                   <Plus size={14} />
                 </button>
-                <button className="view-all">View all</button>
+                {companySettingsCompleted && <button className="view-all">View all</button>}
               </div>
             </div>
+
+            {companySettingsCompleted && (
             <div className="reports-list">
               {reports.map((report) => (
                 <div
@@ -175,6 +200,7 @@ const Layout: React.FC<LayoutProps> = ({ children, reports, onSelectReport, sele
                 </div>
               ))}
             </div>
+            )}
           </div>
         </nav>
 
@@ -261,6 +287,7 @@ const Layout: React.FC<LayoutProps> = ({ children, reports, onSelectReport, sele
     <CompanySettingsDrawer
       isOpen={companySettingsOpen}
       onClose={() => setCompanySettingsOpen(false)}
+      onComplete={() => { onCompanySettingsComplete(); setCompanySettingsOpen(false) }}
     />
     </>
   )

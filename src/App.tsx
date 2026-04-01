@@ -4,12 +4,30 @@ import Login from './components/Login'
 import ChatArea, { ConvTree } from './components/ChatArea'
 import { initialArtifacts, recentReports, Artifact, Report } from './data/mockData'
 
+export type ReportPhase = 'type-selection' | 'upload' | 'active'
+
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
-    const [reports, setReports] = useState<Report[]>(recentReports)
+
+    // Company settings gate
+    const [companySettingsCompleted, setCompanySettingsCompleted] = useState(false)
+
+    // Reports start empty — loaded after company settings
+    const [reports, setReports] = useState<Report[]>([])
     const [selectedReport, setSelectedReport] = useState<string | null>(null)
-    const [artifacts, setArtifacts] = useState<Artifact[]>(initialArtifacts)
-    const [conversations, setConversations] = useState<{ [reportId: string]: ConvTree }>({})
+    const [artifacts, setArtifacts] = useState<Artifact[]>([])
+    const [conversations, setConversations] = useState<Record<string, ConvTree>>({})
+
+    // Per-report onboarding phase
+    const [reportPhases, setReportPhases] = useState<Record<string, ReportPhase>>({})
+    const [reportTypeNames, setReportTypeNames] = useState<Record<string, string>>({})
+
+    // Called when the user saves Company Settings
+    const handleCompanySettingsComplete = () => {
+        setCompanySettingsCompleted(true)
+        setReports(recentReports)
+        setArtifacts(initialArtifacts)
+    }
 
     const handleNewReport = (): string => {
         const newReport: Report = {
@@ -21,6 +39,7 @@ function App() {
         }
         setReports(prev => [newReport, ...prev])
         setSelectedReport(newReport.id)
+        setReportPhases(prev => ({ ...prev, [newReport.id]: 'type-selection' }))
         return newReport.id
     }
 
@@ -33,6 +52,19 @@ function App() {
         if (selectedReport === id) setSelectedReport(null)
     }
 
+    // User picks a report type in the onboarding flow
+    const handleSelectReportType = (typeId: string, typeName: string) => {
+        if (!selectedReport) return
+        setReportTypeNames(prev => ({ ...prev, [selectedReport]: typeName }))
+        setReportPhases(prev => ({ ...prev, [selectedReport]: 'upload' }))
+    }
+
+    // User skips or finishes document upload
+    const handleDocumentsReady = () => {
+        if (!selectedReport) return
+        setReportPhases(prev => ({ ...prev, [selectedReport]: 'active' }))
+    }
+
     const handleTreeChange = (tree: ConvTree) => {
         if (selectedReport) {
             setConversations(prev => ({ ...prev, [selectedReport]: tree }))
@@ -41,6 +73,8 @@ function App() {
 
     const handleFork = (snapshot: ConvTree) => {
         const newId = handleNewReport()
+        // Override — forked reports already have context, so go straight to active
+        setReportPhases(prev => ({ ...prev, [newId]: 'active' }))
         setConversations(prev => ({ ...prev, [newId]: snapshot }))
     }
 
@@ -52,6 +86,10 @@ function App() {
             date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
         setArtifacts(prev => [newArtifact, ...prev])
+        // Uploading a file during the upload phase advances the report to active
+        if (selectedReport && reportPhases[selectedReport] === 'upload') {
+            setReportPhases(prev => ({ ...prev, [selectedReport!]: 'active' }))
+        }
     }
 
     const handleDeleteArtifact = (id: string) => {
@@ -63,6 +101,11 @@ function App() {
     }
 
     const selectedReportTitle = reports.find(r => r.id === selectedReport)?.title
+    // For existing/example reports that have no phase, default to 'active'
+    const currentPhase: ReportPhase | null = selectedReport
+        ? (reportPhases[selectedReport] ?? 'active')
+        : null
+    const currentTypeName = selectedReport ? (reportTypeNames[selectedReport] ?? null) : null
 
     return (
         <Layout
@@ -75,6 +118,8 @@ function App() {
             onLogout={() => setIsLoggedIn(false)}
             artifacts={artifacts}
             onDeleteArtifact={handleDeleteArtifact}
+            companySettingsCompleted={companySettingsCompleted}
+            onCompanySettingsComplete={handleCompanySettingsComplete}
         >
             <ChatArea
                 selectedReport={selectedReport}
@@ -83,6 +128,11 @@ function App() {
                 onTreeChange={handleTreeChange}
                 onFork={handleFork}
                 onUpload={handleUpload}
+                isSetupMode={!companySettingsCompleted}
+                reportPhase={currentPhase}
+                selectedTypeName={currentTypeName}
+                onSelectReportType={handleSelectReportType}
+                onDocumentsReady={handleDocumentsReady}
             />
         </Layout>
     )

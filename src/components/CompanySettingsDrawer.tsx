@@ -4,6 +4,7 @@ import { X, Plus, Upload } from 'lucide-react'
 interface CompanySettingsDrawerProps {
   isOpen: boolean
   onClose: () => void
+  onComplete?: () => void
 }
 
 interface ColorEntry {
@@ -11,7 +12,7 @@ interface ColorEntry {
   hex: string
 }
 
-const CompanySettingsDrawer: React.FC<CompanySettingsDrawerProps> = ({ isOpen, onClose }) => {
+const CompanySettingsDrawer: React.FC<CompanySettingsDrawerProps> = ({ isOpen, onClose, onComplete }) => {
   // Client Profile
   const [clientName, setClientName] = useState('')
   const [yourRole, setYourRole] = useState('')
@@ -147,7 +148,14 @@ const CompanySettingsDrawer: React.FC<CompanySettingsDrawerProps> = ({ isOpen, o
                 placeholder=""
               />
             </Field>
-            <button style={saveBtnStyle}>Save</button>
+            <button
+              style={saveBtnStyle}
+              onClick={() => {
+                if (clientName.trim()) onComplete?.()
+              }}
+            >
+              Save
+            </button>
           </Section>
 
           {/* ── Company Profile ── */}
